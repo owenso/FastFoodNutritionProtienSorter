@@ -1,6 +1,6 @@
 var request = require('request');
 var cheerio = require('cheerio');
-
+var _= require('underscore');
 request('http://fastfoodnutrition.org/mcdonalds/chart', function (error, response, html) {
 
   var $ = cheerio.load(html);
@@ -11,7 +11,7 @@ request('http://fastfoodnutrition.org/mcdonalds/chart', function (error, respons
       var calories = $(this).children('td').eq(1).text();
       var protein = $(this).children('td').eq(11).text();
 
-      var score = protein/calories
+      var score = parseInt(protein)/parseInt(calories);
 
       result.push({
         category:category,
@@ -21,12 +21,16 @@ request('http://fastfoodnutrition.org/mcdonalds/chart', function (error, respons
         score: score
       });
     });
-
+    var filtered = _.filter(result, function(each) {
+        return each.protein;
+    });
     function sortByKey(array, key) {
         return array.sort(function(a, b) {
             var x = a[key]; var y = b[key];
-            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+
+            return ((x < y) ? 1 : ((x > y) ? -1 : 0));
         });
     }
-  console.log(sortByKey(result,'score'));
+    //sortByKey(result,'score')
+  console.log(sortByKey(filtered,'score'));
 });
