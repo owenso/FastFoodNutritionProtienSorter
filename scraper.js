@@ -8,13 +8,12 @@ var prompt = require('prompt');
 prompt.start();
 
 prompt.get('Restaurant', function(err, result) {
-    request('http://fastfoodnutrition.org/' + result + '/chart', function (error, response, html) {
-
+    request('http://fastfoodnutrition.org/' + result.Restaurant + '/chart', function (error, response, html) {
       var $ = cheerio.load(html);
       var result = [];
       $('tr').each(function(i, element){
-          var title = $(this).children('.chart_row_name').children('a').text();
-          var category = $(this).parents('.chart_outside').prev().prev().text();
+          var title = $(this).children('.chart2_table_item').children('a').text();
+          var category = $(this).parents('.chart2_outside').prev().children('h2').text();
           var calories = $(this).children('td').eq(1).text();
           var protein = $(this).children('td').eq(11).text();
 
